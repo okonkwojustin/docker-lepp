@@ -1,4 +1,3 @@
-
 Deploy to AWS EC2
 
 on:
@@ -16,24 +15,24 @@ jobs:
 
       - name:Set up SSH
         run:|
-          echo "${{secret_AWS_SSH_KEY}}"|tr -d '\r' > private key.pem
+          echo "${{ secrets.AWS_SSH_KEY }}" | tr -d '\r' > private_key.pem
           chmod 600 private_key.pem
 
       - name: Debug SSH Key
         run:|
           echo "Checking if private key exists..."
-          ls-l private_key.pem
+          ls -l private_key.pem
           echo "First 5 lines of the private key:"
           head -n 5 private_key.pem
 
       - name: Debug Secrets
         run: |
-          echo "AWS_EC2_USER: '${{secrets.AWS_EC2_USER}}'"
-          echo "AWS_EC2_USER: '${{secrets.AWS EC2 HOST }}'"
+          echo "AWS_EC2_USER: '${{ secrets.AWS_EC2_USER }}'"
+          echo "AWS_EC2_USER: '${{ secrets.AWS EC2 HOST }}'"
 
       - name: Deploy to AWS EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{secrets.AWS_EC2_HOST}} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ secrets.AWS_EC2_HOST }} << 'EOF'
             cd /home/ubuntu/docker-lepp || git clone https://github.com/okonkwojustin/docker-lepp.git /home/ubuntu/docker-lepp
             git pull origin main
             docker-compose down
